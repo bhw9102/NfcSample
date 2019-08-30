@@ -3,6 +3,7 @@ package com.nolgong.nfcsample.view;
 import android.hardware.usb.UsbDevice;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Messenger;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback{
     private Spinner spinnerNfc;
     private ArrayAdapter<String> adapterNfc;
     private TextView textViewLog;
+    private Messenger messenger = new Messenger(new Handler(this));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements Handler.Callback{
         textViewLog = findViewById(R.id.textview_log);
 
         onCreateSpinner();
+
+        BaseApplication.INSTANCE.nfcHandler.setMsgToActivity(messenger);
     }
 
     /**
