@@ -1,16 +1,6 @@
 package com.nolgong.nfcsample.nfc;
 
-import com.acs.smartcard.Reader;
-import com.nolgong.nfcsample.BaseApplication;
-
-import java.util.ArrayList;
-
 public class Tool {
-
-
-
-
-
     /**
      * Converts the HEX string to byte array.
      *
