@@ -103,7 +103,8 @@ public class TransmitTask extends AsyncTask<TransmitParams, TransmitProgress, Vo
         if(apdu == null){
             return null;
         }
-        if(apdu[16] != -122){
+        byte b = -112;
+        if(apdu[16] != b){
             return null;
         }
         return buildNdefMessage(apdu);
