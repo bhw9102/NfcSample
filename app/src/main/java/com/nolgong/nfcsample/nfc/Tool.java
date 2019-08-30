@@ -1,55 +1,15 @@
 package com.nolgong.nfcsample.nfc;
 
+import com.acs.smartcard.Reader;
+import com.nolgong.nfcsample.BaseApplication;
+
 import java.util.ArrayList;
 
 public class Tool {
 
-    public static String readNfcValue(byte[] apdu){
-        if(apdu == null){
-            return null;
-        }
-        if(apdu[16] != -122){
-            return null;
-        }
-        buildNdefMessage(apdu);
-    }
 
-    public static ArrayList<Byte> buildNdefMessage(byte[] apdu){
-        int tlvTag = -1;
-        int tlvLength = -1;
-        ArrayList<Byte> ndefMessage = new ArrayList<>();
-        boolean ndefFlag = false;
-        for(int i=0;i<16;i++){
-            if(tlvTag == -1){
-                tlvTag = apdu[i];
-                continue;
-            } else if (tlvLength == -1){
-                tlvLength = apdu[i];
-                continue;
-            }
 
-            if(tlvTag == 1){
-                i += tlvLength -1;
-                tlvTag = -1;
-                tlvLength = -1;
-                continue;
-            } else if (tlvTag == -2){
-                return null;
-            }
 
-            if(ndefMessage.size() < tlvLength){
-                ndefMessage.add(apdu[i]);
-            } else if(tlvLength == 0){
-                tlvTag = -1;
-                tlvLength = -1;
-                i--;
-            } else {
-                ndefFlag = true;
-                break;
-            }
-        }
-        return ndefMessage;
-    }
 
     /**
      * Converts the HEX string to byte array.

@@ -1,5 +1,8 @@
 package com.nolgong.nfcsample.view;
 
+import android.hardware.usb.UsbDevice;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,9 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.nolgong.nfcsample.BaseApplication;
 import com.nolgong.nfcsample.R;
+import com.nolgong.nfcsample.nfc.Value;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Handler.Callback{
 
     private Spinner spinnerNfc;
     private ArrayAdapter<String> adapterNfc;
@@ -42,7 +47,12 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener buttonFindNfc = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            adapterNfc.clear();
+            for(UsbDevice device : BaseApplication.INSTANCE.usbManager.getDeviceList().values()){
+                if(BaseApplication.INSTANCE.reader.isSupported(device)){
+                    adapterNfc.add(device.getDeviceName());
+                }
+            }
         }
     };
 
@@ -52,7 +62,29 @@ public class MainActivity extends AppCompatActivity {
     View.OnClickListener buttonConnectNfc = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            String deviceName = (String) spinnerNfc.getSelectedItem();
+            if(deviceName == null){
+                return;
+            }
+            for(UsbDevice device : BaseApplication.INSTANCE.usbManager.getDeviceList().values()){
+                if(deviceName.equals(device.getDeviceName())){
+                    BaseApplication.INSTANCE.usbManager.requestPermission(device, BaseApplication.INSTANCE.permissionIntent);
+                    break;
+                }
+            }
         }
     };
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        switch (msg.what){
+            case Value.SEND_TO_ACTIVITY_FROM_NFC:
+                String nfcValue = msg.getData().getString(Value.NFC_MESSAGE);
+                textViewLog.append("\n" + nfcValue);
+                break;
+            default:
+
+        }
+        return false;
+    }
 }
